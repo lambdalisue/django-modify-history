@@ -1,0 +1,73 @@
+Metadata-Version: 1.0
+Name: django-modify-history
+Version: 0.1rc1
+Summary: Automatically create history database when perticular model is saved.
+Home-page: https://github.com/alisue/django-modify-history
+Author: Alisue
+Author-email: alisue@hashnote.net
+License: BSD
+Download-URL: https://github.com/alisue/django-modify-history/tarball/master
+Description: Introduction
+        ===========================================
+        This application will create history table for each object in Django
+        
+        Install
+        ===========================================
+        
+        	sudo pip install django-modify-history
+        
+        or
+        
+        	git clone git://github.com/alisue/django-modify-history.git
+        	sudo pip install django-modify-history/
+        
+        or download repository and copy it to somewhere in PYTHON_PATH
+        
+        
+        How to Use
+        ==========================================
+        
+        1. Append `modify_history` to `INSTALLED_APPS`
+        2. run `manage.py syncdb`
+        3. Add `history_site.py` to the app and write like below
+        
+        	from modify_history import site
+        	from modify_history.backends.basic import BasicHistoryBackend
+        
+        	from models import Article
+        
+        	class ArticleBackend(BasicHistoryBackend):
+        		pass
+        	site.register(Article, ArticleBackend)
+        4. Use `get_history_timelines` template tags for get history list like below
+        
+        	{% extends 'base.html' %}
+        	{% load historytags %}
+        
+        	{% block content %}
+        	<h2>History</h2>
+        	<ul>
+        		{% get_history_timelines as timelines %}
+        		{% for timeline in timelines %}
+        		<li>{{ timeline.get_message }} at {{ timeline.created_at|date }}</li>
+        		{% endfor %}
+        	</ul>
+        	{% endblock %}
+        
+        
+        Settings
+        =========================================
+        `HISTORY_ENABLE`
+        : Make history enable, to disable history app just set this `False`
+        
+        `HISTORY_USER_ATTRS`
+        : modify_history app find user from target object's attrs. this is the list of name
+        of attrs. default is ['updated_by', 'user', 'author', 'created_by']
+        
+Keywords: django history modify
+Platform: UNKNOWN
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP
