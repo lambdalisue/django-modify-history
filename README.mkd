@@ -21,29 +21,27 @@ How to Use
 1. Append `modify_history` to `INSTALLED_APPS`
 2. run `manage.py syncdb`
 3. Add `history_site.py` to the app and write like below
+		from modify_history import site
+		from modify_history.backends.basic import BasicHistoryBackend
 
-	from modify_history import site
-	from modify_history.backends.basic import BasicHistoryBackend
+		from models import Article
 
-	from models import Article
-
-	class ArticleBackend(BasicHistoryBackend):
-		pass
-	site.register(Article, ArticleBackend)
+		class ArticleBackend(BasicHistoryBackend):
+			pass
+		site.register(Article, ArticleBackend)
 4. Use `get_history_timelines` template tags for get history list like below
+		{% extends 'base.html' %}
+		{% load historytags %}
 
-	{% extends 'base.html' %}
-	{% load historytags %}
-
-	{% block content %}
-	<h2>History</h2>
-	<ul>
-		{% get_history_timelines as timelines %}
-		{% for timeline in timelines %}
-		<li>{{ timeline.get_message }} at {{ timeline.created_at|date }}</li>
-		{% endfor %}
-	</ul>
-	{% endblock %}
+		{% block content %}
+		<h2>History</h2>
+		<ul>
+			{% get_history_timelines as timelines %}
+			{% for timeline in timelines %}
+			<li>{{ timeline.get_message }} at {{ timeline.created_at|date }}</li>
+			{% endfor %}
+		</ul>
+		{% endblock %}
 
 
 Settings
